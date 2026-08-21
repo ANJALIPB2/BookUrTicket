@@ -1,0 +1,151 @@
+<!-- Admin View -->
+<section id="admin-view" class="view hidden" style="padding-top: 5rem; min-height: 80vh;">
+    <div class="profile-header"
+        style="background: var(--primary-color); color: white; padding: 3rem; border-radius: 12px; margin-bottom: 3rem; text-align: center;">
+        <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem;"> BookUrTicket Admin Dashboard</h1>
+        <p style="opacity: 0.8;">Manage movies, view metrics, and oversee all bookings.</p>
+    </div>
+
+    <!-- Add Movie Section -->
+    <div class="movie-card"
+        style="padding: 2.5rem; margin-bottom: 3rem; background: var(--card-bg); border: 1px solid #eee;">
+        <h2 style="margin-bottom: 2rem; display: flex; align-items: center; gap: 10px;">🎥 Add New Movie to Inventory
+        </h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+            <div>
+                <div style="margin-bottom: 1.2rem;">
+                    <label class="admin-label">Movie Title</label>
+                    <input type="text" id="admin-movie-title" class="admin-input"
+                        placeholder="e.g., Pushpa 2: The Rule">
+                </div>
+                <div style="margin-bottom: 1.2rem;">
+                    <label class="admin-label">Synopsis</label>
+                    <textarea id="admin-movie-synopsis" class="admin-input" style="height: 100px; resize: none;"
+                        placeholder="Brief overview of the movie..."></textarea>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div>
+                        <label class="admin-label">Genre</label>
+                        <input type="text" id="admin-movie-genre" class="admin-input" placeholder="Action/Drama">
+                    </div>
+                    <div>
+                        <label class="admin-label">Language</label>
+                        <select id="admin-movie-lang" class="admin-input">
+                            <option value="Hindi">Hindi</option>
+                            <option value="Telugu">Telugu</option>
+                            <option value="Tamil">Tamil</option>
+                            <option value="Kannada">Kannada</option>
+                            <option value="Malayalam">Malayalam</option>
+                            <option value="Marathi">Marathi</option>
+                            <option value="Punjabi">Punjabi</option>
+                            <option value="Bengali">Bengali</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div style="margin-bottom: 1.2rem;">
+                    <label class="admin-label">Poster Image URL</label>
+                    <input type="text" id="admin-movie-img" class="admin-input"
+                        placeholder="https://image-url.com/poster.jpg">
+                </div>
+                <div style="margin-bottom: 1.2rem;">
+                    <label class="admin-label">Trailer Link (YouTube)</label>
+                    <input type="text" id="admin-movie-trailer" class="admin-input"
+                        placeholder="https://youtube.com/watch?v=...">
+                </div>
+                <div style="margin-bottom: 2rem; display: flex; align-items: center; gap: 10px;">
+                    <input type="checkbox" id="admin-is-top" style="width: 20px; height: 20px; cursor: pointer;">
+                    <label for="admin-is-top" style="font-weight: 600; cursor: pointer;">Mark as Trending/Top
+                        Movie</label>
+                </div>
+                <button id="admin-add-movie-btn" class="btn btn-primary w-full"
+                    style="padding: 1.2rem; font-size: 1.1rem; box-shadow: 0 4px 15px var(--accent-glow);">🚀 Upload
+                    Movie to Portal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Metrics -->
+
+    <div class="movies-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 3rem;">
+        <div class="movie-card" style="padding: 2rem; text-align: center;">
+            <h3 style="color: #888; font-size: 1rem; text-transform: uppercase;">Total Users</h3>
+            <div id="admin-users-count" style="font-size: 3rem; font-weight: 900; color: var(--accent-color);">0</div>
+        </div>
+        <div class="movie-card" style="padding: 2rem; text-align: center;">
+            <h3 style="color: #888; font-size: 1rem; text-transform: uppercase;">Total Revenue (Est)</h3>
+            <div id="admin-revenue-count" style="font-size: 3rem; font-weight: 900; color: var(--success-green);">₹0
+            </div>
+        </div>
+        <div class="movie-card" style="padding: 2rem; text-align: center;">
+            <h3 style="color: #888; font-size: 1rem; text-transform: uppercase;">Transactions</h3>
+            <div id="admin-bookings-count" style="font-size: 3rem; font-weight: 900; color: #ffb800;">0</div>
+        </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+
+        <!-- Login History Data -->
+        <div class="movie-card" style="padding: 2rem; overflow-x: auto;">
+            <h2 style="margin-bottom: 1.5rem; border-bottom: 2px solid #eee; padding-bottom: 1rem;">👥 Login History
+                (All Users)</h2>
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Full Name</th>
+                        <th>Email Address</th>
+                    </tr>
+                </thead>
+                <tbody id="admin-users-list">
+                    <!-- Populated via JS -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Bookings Data -->
+        <div class="movie-card" style="padding: 2rem; overflow-x: auto;">
+            <h2 style="margin-bottom: 1.5rem; border-bottom: 2px solid #eee; padding-bottom: 1rem;">📋 Ticket Purchases
+            </h2>
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Ticket ID</th>
+                        <th>User Logged In</th>
+                        <th>Movie</th>
+                        <th>Time</th>
+                        <th>Seats Booked</th>
+                        <th style="position: sticky; right: 0; background: #fdfdfd; z-index: 10; box-shadow: -2px 0 5px rgba(0,0,0,0.05);">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="admin-bookings-list">
+                    <!-- Populated via JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Movie Inventory Section -->
+    <div class="movie-card" style="padding: 2rem; margin-top: 3rem; overflow-x: auto;">
+        <h2 style="margin-bottom: 1.5rem; border-bottom: 2px solid #eee; padding-bottom: 1rem;">🎞️ Movie Inventory</h2>
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>ID</th>
+                    <th>Movie Title</th>
+                    <th>Language</th>
+                    <th>Genre</th>
+                    <th>Trending</th>
+                    <th>Trailer</th>
+                    <th style="position: sticky; right: 0; background: #fdfdfd; z-index: 10; box-shadow: -2px 0 5px rgba(0,0,0,0.05);">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="admin-movies-list">
+                <!-- Populated via JS -->
+            </tbody>
+        </table>
+    </div>
+
+</section>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Movie Ticket | BookUrTicket</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=5.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        body {
+            background: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 2rem;
+        }
+
+        .controls {
+            margin-top: 2rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        @media print {
+            .controls {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="ticket-wrapper" id="printable-ticket">
+        <div class="ticket-main-body">
+            <img src="{{ t.image_url }}"
+                style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; opacity:0.1; filter:grayscale(100%); z-index:0; pointer-events:none;">
+
+            <div class="ticket-left-section">
+                <div class="ticket-header-info">
+                    <div class="ticket-cinema">BOOKURTICKET PREMIUM</div>
+                    <div class="ticket-admit">GOLDEN PASS 👑</div>
+                </div>
+
+                <h1 class="ticket-title">{{ t.title.upper() }}</h1>
+
+                <div class="ticket-user-info">
+                    <small>ISSUED TO</small>
+                    <div id="ticket-user-name">{{ t.user_name or 'GUEST' }}</div>
+                    <div id="ticket-user-email">{{ t.user_email or 'N/A' }}</div>
+                </div>
+
+                <div class="ticket-data-grid">
+                    <div class="data-item">
+                        <small>DATE</small>
+                        <div>{{ t.date }}</div>
+                    </div>
+                    <div class="data-item">
+                        <small>TIME</small>
+                        <div id="ticket-time-text">{{ t.time }}</div>
+                    </div>
+                    <div class="data-item">
+                        <small>SEATS</small>
+                        <div id="ticket-seats-text">{{ t.seats }}</div>
+                    </div>
+                    <div class="data-item">
+                        <small>HALL</small>
+                        <div>SCREEN 04</div>
+                    </div>
+                </div>
+                <div class="ticket-footer">
+                    <div class="barcode"></div>
+                    <div class="ticket-serial">SERIAL: BK-{{ t.seats[0:2].upper() }}-{{ booking_id }}</div>
+                </div>
+            </div>
+
+            <div class="ticket-stub-section">
+                <div class="stub-notch top-notch"></div>
+                <div class="stub-notch bottom-notch"></div>
+                <div class="stub-content">
+                    <small>TOTAL PAID</small>
+                    <div id="ticket-total-text" style="font-size: 1.8rem; font-weight: 900; color: black !important;">
+                        ₹{{ "%.2f"|format(t.amount) }}</div>
+                    <div class="barcode barcode-stub"></div>
+                    <div style="font-size:0.6rem; opacity:0.8; margin-top:0.5rem; color: black;">OFFICIAL PASS ✅</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="btn btn-primary" onclick="window.location.href='/api/download-ticket/{{ booking_id }}'">📥 Download Original PDF</button>
+        <button class="btn btn-outline" onclick="window.close(); window.location.href='/'">Go to Home</button>
+    </div>
+
+    <script>
+        // Automatic PDF naming logic
+        window.onload = function () {
+            document.title = "Ticket_{{ t.title }}_{{ t.seats }}";
+        };
+    </script>
+</body>
+
+</html>

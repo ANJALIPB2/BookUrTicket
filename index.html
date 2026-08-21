@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="BookUrTicket - The premium movie booking portal for Indian Cinema.">
+    <title>BookUrTicket | Official Movie Booking</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Roboto:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/static/css/style.css?v=5.0">
+    <!-- Reliable PDF Generation Library (Primary + Secondary CDNs) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://unpkg.com/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
+
+    <!-- Ultimate Native-High-Fidelity Download Fix (No Blank Pages) -->
+    <script>
+        function downloadTicketPDF() {
+            if (window.showToast) window.showToast("Opening Secure Print Engine... 🎟️");
+            else alert("Opening Ticket... Choose 'Save as PDF' in the destination.");
+
+            // Native print is 100% reliable for CSS rendering where JS libraries fail.
+            // We use the @media print styles to ensure only the ticket is captured.
+            setTimeout(() => {
+                window.print();
+            }, 500);
+        }
+    </script>
+</head>
+
+<body>
+    <!-- Toast Notifications -->
+    <div id="toast-container"></div>
+
+    {% include 'navbar.html' %}
+    <main id="app-container">
+        {% include 'home.html' %}
+        {% include 'cinemas.html' %}
+        {% include 'profile.html' %}
+        {% include 'admin.html' %}
+        <!-- Authentication Modal -->
+        <div id="auth-modal" class="modal-overlay hidden" style="backdrop-filter: blur(8px);">
+            <div class="modal auth-modal-content split-auth-modal"
+                style="padding: 0; display: flex; max-width: 900px; overflow: hidden;">
+                <button class="close-btn" onclick="toggleAuthModal(false)"
+                    style="position: absolute; right: 1.5rem; top: 1.5rem; z-index: 10; color: #333;">&times;</button>
+
+                <!-- Left Pane: Branding/Cinematic -->
+                <div class="auth-left-pane"
+                    style="flex: 1; background: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(0,0,0,0.4)), url('https://image.tmdb.org/t/p/w1280/8ZTVqvKDQ8emSGUEMjsS4yHAwrp.jpg') center/cover; color: white; padding: 3rem; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div class="logo">Book<span style="color:var(--accent-color)">Ur</span>Ticket</div>
+                    <div style="margin-bottom: 2rem;">
+                        <h2 style="font-size: 2.2rem; font-weight: 800; line-height: 1.2; margin-bottom: 1rem;">Unlock
+                            The World of Cinema.</h2>
+                        <p style="opacity: 0.8; font-size: 1rem;">Join the premier destination for booking movie tickets
+                            across India. Seamless, fast, and secure.</p>
+                    </div>
+                </div>
+
+                <!-- Right Pane: Forms -->
+                <div class="auth-right-pane" style="flex: 1.2; padding: 3.5rem; background: white;">
+                    <div id="auth-forms">
+                        <!-- Login Content -->
+                        <div id="login-form">
+                            <h2 style="font-size: 1.8rem; margin-bottom: 0.5rem; color: #111;">Login</h2>
+                            <p style="color: var(--text-light); margin-bottom: 2rem;">Welcome back! Please enter your
+                                details.</p>
+
+
+
+                            <div style="margin-bottom: 1.2rem;">
+                                <label
+                                    style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; color: #444;">Email
+                                    Address</label>
+                                <input type="email" id="login-email" placeholder="Enter your Email"
+                                    style="width: 100%; padding: 0.8rem 1rem; border: 1px solid #ddd; border-radius: 8px; outline: none; background: #fafafa; transition: 0.3s; font-family: var(--font-main);">
+                            </div>
+                            <div style="margin-bottom: 1.2rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                    <label style="display: block; font-size: 0.85rem; font-weight: 600; color: #444; margin: 0;">Password</label>
+                                    <span class="toggle-link" onclick="toggleAuth('forgot-password')" style="font-size: 0.8rem; color: var(--accent-color); font-weight: 700; cursor: pointer;">Forgot Password?</span>
+                                </div>
+                                <div style="position: relative;">
+                                    <input type="password" id="login-password" placeholder="••••••••"
+                                        style="width: 100%; padding: 0.8rem 1rem; padding-right: 2.5rem; border: 1px solid #ddd; border-radius: 8px; outline: none; background: #fafafa; transition: 0.3s; font-family: var(--font-main);">
+                                    <button type="button" tabindex="-1"
+                                        onclick="const p=document.getElementById('login-password'); p.type=p.type==='password'?'text':'password'; this.style.opacity=p.type==='password'?'0.5':'1';"
+                                        style="position: absolute; right: 0.8rem; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 1rem; padding: 0; opacity: 0.5;">👁️</button>
+                                </div>
+                            </div>
+
+                            <button id="login-submit" class="btn btn-primary"
+                                style="width: 100%; padding: 1rem; margin-top: 1rem; box-shadow: 0 4px 15px rgba(255, 51, 102, 0.3);">Login
+                            </button>
+
+                            <div style="display: flex; align-items: center; margin: 2rem 0; color: #999;">
+                                <hr style="flex: 1; border: none; border-top: 1px solid #eee;">
+                                <span
+                                    style="padding: 0 1rem; font-size: 0.75rem; font-weight: 700; letter-spacing: 1px;">OR</span>
+                                <hr style="flex: 1; border: none; border-top: 1px solid #eee;">
+                            </div>
+
+                            <button onclick="handleGoogleLogin()" class="official-google-btn">
+                                <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png"
+                                    alt="Google">
+                                <span>Sign in with Google</span>
+                            </button>
+
+                            <p style="text-align: center; margin-top: 1.5rem; font-size: 0.9rem; color: #666;">Don't
+                                have an account? <span id="to-register" class="toggle-link"
+                                    style="color: var(--accent-color); font-weight: 700; cursor: pointer;">Register
+                                </span></p>
+                        </div>
+
+                        <!-- Register Content -->
+                        <div id="register-form" class="hidden">
+                            <h2 style="font-size: 1.8rem; margin-bottom: 0.5rem; color: #111;">Create an Account</h2>
+                            <p style="color: var(--text-light); margin-bottom: 2rem;">Register to start booking your
+                                tickets.</p>
+
+                            <div style="margin-bottom: 1.2rem;">
+                                <label
+                                    style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; color: #444;">Full
+                                    Name</label>
+                                <input type="text" id="reg-name" placeholder="Your name"
+                                    style="width: 100%; padding: 0.8rem 1rem; border: 1px solid #ddd; border-radius: 8px; outline: none; background: #fafafa; transition: 0.3s; font-family: var(--font-main);">
+                            </div>
+                            <div style="margin-bottom: 1.2rem;">
+                                <label
+                                    style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; color: #444;">Email
+                                    Address</label>
+                                <input type="email" id="reg-email" placeholder="Enter your Email"
+                                    style="width: 100%; padding: 0.8rem 1rem; border: 1px solid #ddd; border-radius: 8px; outline: none; background: #fafafa; transition: 0.3s; font-family: var(--font-main);">
+                            </div>
+                            <div style="margin-bottom: 1.2rem;">
+                                <label
+                                    style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; color: #444;">Password</label>
+                                <div style="position: relative;">
+                                    <input type="password" id="reg-password" placeholder="Create a strong password"
+                                        style="width: 100%; padding: 0.8rem 1rem; padding-right: 2.5rem; border: 1px solid #ddd; border-radius: 8px; outline: none; background: #fafafa; transition: 0.3s; font-family: var(--font-main);">
+                                    <button type="button" tabindex="-1"
+                                        onclick="const p=document.getElementById('reg-password'); p.type=p.type==='password'?'text':'password'; this.style.opacity=p.type==='password'?'0.5':'1';"
+                                        style="position: absolute; right: 0.8rem; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 1rem; padding: 0; opacity: 0.5;">👁️</button>
+                                </div>
+                            </div>
+
+                            <button id="reg-submit" class="btn btn-primary"
+                                style="width: 100%; padding: 1rem; margin-top: 1rem; box-shadow: 0 4px 15px rgba(255, 51, 102, 0.3);">Create
+                                Account</button>
+
+                            <div style="display: flex; align-items: center; margin: 2rem 0; color: #999;">
+                                <hr style="flex: 1; border: none; border-top: 1px solid #eee;">
+                                <span
+                                    style="padding: 0 1rem; font-size: 0.75rem; font-weight: 700; letter-spacing: 1px;">OR</span>
+                                <hr style="flex: 1; border: none; border-top: 1px solid #eee;">
+                            </div>
+
+                            <button onclick="handleGoogleLogin()" class="official-google-btn">
+                                <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png"
+                                    alt="Google">
+                                <span>Sign up with Google</span>
+                            </button>
+
+                            <p style="text-align: center; margin-top: 1.5rem; font-size: 0.9rem; color: #666;">Already
+                                have an account? <span id="to-login" class="toggle-link"
+                                    style="color: var(--accent-color); font-weight: 700; cursor: pointer;">Login
+                                </span></p>
+                        </div>
+
+                        <!-- Forgot Password Content -->
+                        <div id="forgot-password-form" class="hidden">
+                            <h2 style="font-size: 1.8rem; margin-bottom: 0.5rem; color: #111;">Reset Password</h2>
+                            <p style="color: var(--text-light); margin-bottom: 2rem;">Enter your email to receive a temporary password.</p>
+
+                            <div style="margin-bottom: 1.2rem;">
+                                <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; color: #444;">Email Address</label>
+                                <input type="email" id="forgot-email" placeholder="Enter your registered email" style="width: 100%; padding: 0.8rem 1rem; border: 1px solid #ddd; border-radius: 8px; outline: none; background: #fafafa; transition: 0.3s; font-family: var(--font-main);">
+                            </div>
+
+                            <button id="forgot-submit" class="btn btn-primary" style="width: 100%; padding: 1rem; margin-top: 1rem; box-shadow: 0 4px 15px rgba(255, 51, 102, 0.3);">Send Temporary Password</button>
+
+                            <p style="text-align: center; margin-top: 1.5rem; font-size: 0.9rem; color: #666;">Remember your password? <span onclick="toggleAuth('login')" class="toggle-link" style="color: var(--accent-color); font-weight: 700; cursor: pointer;">Login</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NEW: High-Fidelity Google Account Chooser Modal (Simulated) -->
+                <div id="google-chooser-modal" class="modal-overlay hidden"
+                    style="z-index: 6000; background: rgba(0,0,0,0.5);">
+                    <div class="google-chooser-card">
+                        <div class="google-chooser-header">
+                            <img src="https://www.google.com/favicon.ico" alt="Google" class="google-logo-small">
+                            <h2>Choose an account</h2>
+                            <p>to continue to <strong>BookUrTicket</strong></p>
+                        </div>
+
+                        <div class="google-accounts-list" id="google-accounts-list">
+                            <!-- Accounts will be injected here via JS -->
+                        </div>
+
+                        <div class="google-chooser-footer">
+                            <button class="google-footer-btn"
+                                onclick="document.getElementById('google-chooser-modal').classList.add('hidden')">Cancel</button>
+                            <div class="google-footer-links">
+                                <span>Help</span>
+                                <span>Privacy</span>
+                                <span>Terms</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h3 class="logo">Book<span style="color:var(--accent-color)">Ur</span>Ticket</h3>
+                <p>The smartest and fastest way to book movies online in India. Experience cinema like never before.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <a href="#">Movies</a>
+                <a href="#">Theatres</a>
+                <a href="#">Offers</a>
+            </div>
+            <div class="footer-col">
+                <h4>Support</h4>
+                <a href="#">Help Center</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms & Conditions</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2026 BookUrTicket. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- Booking Modal moved to body level -->
+    <div id="booking-modal" class="modal-overlay hidden">
+        <div class="modal booking-modal-content">
+            <button class="close-btn" id="close-modal"
+                onclick="document.getElementById('booking-modal').classList.add('hidden')">&times;</button>
+
+            <!-- Step 1: Info & Showtimes -->
+            <div id="step-1" class="booking-step active">
+                <div class="movie-header-modern">
+                    <div style="display: flex; flex-direction: column; gap: 1rem; align-items: center;">
+                        <img id="modal-movie-img" src="" alt="Poster" class="small-poster">
+                        <button id="modal-trailer-btn" class="btn btn-outline w-full">📺 Watch Trailer</button>
+                    </div>
+                    <div class="movie-meta">
+                        <h2 id="modal-movie-title"></h2>
+                        <p id="modal-movie-synopsis"></p>
+                        <h3>Select Showtime</h3>
+                        <div class="showtimes-list" id="showtimes-list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Seat Selection -->
+            <div id="step-2" class="booking-step hidden">
+                <button class="btn btn-minimal" data-target="1">← Back to Showtimes</button>
+
+                <div class="screen-container">
+                    <div class="realistic-screen"></div>
+                    <div class="screen-label">CINEMA SCREEN</div>
+                </div>
+
+                <div class="seats-container" id="seats-map"></div>
+                <div class="legend">
+                    <span>
+                        <div class="seat available"></div> Classic (₹250)
+                    </span>
+                    <span>
+                        <div class="seat prime available"></div> Prime (₹350)
+                    </span>
+                    <span>
+                        <div class="seat recliner available"></div> Recliner (₹500)
+                    </span>
+                    <span>
+                        <div class="seat selected"></div> Selected
+                    </span>
+                    <span>
+                        <div class="seat occupied"></div> Booked
+                    </span>
+                </div>
+                <button class="btn btn-primary w-full" id="confirm-seats-btn" disabled>Confirm Seats &
+                    Continue</button>
+            </div>
+
+            <!-- Step 3: Food & Beverages -->
+            <div id="step-3" class="booking-step hidden">
+                <button class="btn btn-minimal" data-target="2">← Back to Seats</button>
+                <h3>Add Snacks & Beverages 🍿</h3>
+                <p style="color:var(--text-light); margin-bottom: 1.5rem;">Pre-book your snacks and skip the queue!
+                </p>
+                <div id="fnb-grid" class="fnb-grid">
+                    <div class="fnb-item">
+                        <div class="fnb-icon">🍿</div>
+                        <h4>Large Popcorn</h4>
+                        <p>₹250</p>
+                        <div class="fnb-controls">
+                            <button class="btn-qty" onclick="updateFnb('popcorn', -1)">-</button>
+                            <span id="qty-popcorn">0</span>
+                            <button class="btn-qty" onclick="updateFnb('popcorn', 1)">+</button>
+                        </div>
+                    </div>
+                    <div class="fnb-item">
+                        <div class="fnb-icon">🥤</div>
+                        <h4>Coke (500ml)</h4>
+                        <p>₹150</p>
+                        <div class="fnb-controls">
+                            <button class="btn-qty" onclick="updateFnb('coke', -1)">-</button>
+                            <span id="qty-coke">0</span>
+                            <button class="btn-qty" onclick="updateFnb('coke', 1)">+</button>
+                        </div>
+                    </div>
+                    <div class="fnb-item">
+                        <div class="fnb-icon">🥙</div>
+                        <h4>Cheesy Nachos</h4>
+                        <p>₹300</p>
+                        <div class="fnb-controls">
+                            <button class="btn-qty" onclick="updateFnb('nachos', -1)">-</button>
+                            <span id="qty-nachos">0</span>
+                            <button class="btn-qty" onclick="updateFnb('nachos', 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-primary w-full" id="confirm-fnb-btn" style="margin-top: 2rem;">Proceed to
+                    Payment (₹<span id="fnb-btn-total">0</span>)</button>
+            </div>
+
+            <!-- Step 4: Payment -->
+            <div id="step-4" class="booking-step hidden">
+                <button class="btn btn-minimal" data-target="3" style="margin-bottom: 1.5rem;">← Back to
+                    Snacks</button>
+                <h3>Secure Checkout</h3>
+                <p style="color:var(--text-light); margin-bottom: 1.5rem;">Fast, encrypted payment processing.</p>
+
+                <div class="payment-method-tabs" style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+                    <button class="btn btn-outline" id="tab-card" style="flex: 1;" onclick="setPaymentMethod('card')">💳
+                        Credit/Debit Card</button>
+                    <button class="btn btn-outline" id="tab-upi" style="flex: 1;" onclick="setPaymentMethod('upi')">📱
+                        UPI / QR Code</button>
+                </div>
+
+                <div class="payment-container hidden" id="payment-card-container">
+                    <div class="payment-card-visual">
+                        <div class="card-brand"
+                            style="text-align: right; font-weight: 800; font-size: 1.2rem; opacity: 0.8;">VISA</div>
+                        <div class="chip"></div>
+                        <div id="card-number-display">**** **** **** ****</div>
+                        <div class="card-meta">
+                            <div class="card-holder"><small>CARD HOLDER</small>
+                                <div id="card-name-display">YOUR NAME</div>
+                            </div>
+                            <div class="card-expiry"><small>EXPIRES</small>
+                                <div>12/29</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="payment-inputs">
+                        <div class="input-field">
+                            <label>Cardholder Name</label>
+                            <input type="text" id="card-name-input" placeholder="Full Name (As on Card)" maxlength="30">
+                        </div>
+                        <div class="input-field">
+                            <label>Card Number</label>
+                            <input type="text" id="card-input" placeholder="0000 0000 0000 0000" maxlength="19">
+                        </div>
+                        <div class="input-row">
+                            <div class="input-field">
+                                <label>Expiry Date</label>
+                                <input type="text" id="expiry-input" placeholder="MM/YY" maxlength="5">
+                            </div>
+                            <div class="input-field">
+                                <label>CVV Code</label>
+                                <input type="text" id="cvv-input" placeholder="***" maxlength="3">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="payment-container hidden" id="payment-upi-container"
+                    style="flex-direction: column; align-items: center; justify-content: center; padding: 2rem; background: #fafafa; border-radius: 12px; border: 1px solid #eee; text-align: center;">
+                    <h4 style="margin-bottom: 0.5rem; color: #333;">Scan to Pay with any UPI App</h4>
+                    <p style="font-size: 0.85rem; color: #888; margin-bottom: 1.5rem;">GPay, PhonePe, Paytm, BHIM</p>
+
+                    <div
+                        style="background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: inline-block;">
+                        <img id="upi-qr-img" src="/static/QR code.jpeg" alt="UPI QR Code"
+                            style="width: 200px; height: 200px; object-fit: contain;">
+                    </div>
+
+                    <div style="margin-top: 1.5rem; width: 100%;">
+                        <label
+                            style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; color: #444; text-align: left;">Enter
+                            UPI Reference No. (12-Digit UTR)</label>
+                        <input type="text" id="upi-ref-input" placeholder="E.g. 3010XXXXXXXX" maxlength="12"
+                            style="width: 100%; padding: 0.8rem 1rem; border: 1px solid #ddd; border-radius: 8px; outline: none; transition: 0.3s; font-family: inherit;">
+                    </div>
+                </div>
+
+                <button class="btn btn-primary w-full hidden" id="pay-now-btn"
+                    style="margin-top: 2rem; font-size:1.1rem; padding:1.2rem;">
+                    Pay ₹<span id="total-price">0</span> & Confirm Ticket
+                </button>
+                <p style="text-align:center; font-size: 0.8rem; color:#888; margin-top: 1rem;">🔒 256-bit
+                    Encrypted Transaction</p>
+            </div>
+
+            <!-- Step 5: Finished Ticket -->
+            <div id="step-5" class="booking-step hidden" style="text-align: center;">
+                <div class="success-header">
+                    <div class="check-icon"
+                        style="background:var(--success-green); color:white; width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1.5rem; font-size:1.5rem;">
+                        ✓</div>
+                    <h2 style="color:var(--primary-color);">Booking Confirmed!</h2>
+                    <p style="color:var(--text-light); margin-bottom: 2rem;">Enjoy the show! Your digital pass is ready
+                        below.</p>
+                </div>
+
+                <div class="ticket-wrapper" id="printable-ticket">
+                    <div class="ticket-main-body">
+                        <img id="ticket-bg-img" src="" crossorigin="anonymous"
+                            style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; opacity:0.1; z-index:0; pointer-events:none;">
+
+                        <div class="ticket-left-section">
+                            <div class="ticket-header-info">
+                                <div class="ticket-cinema">BOOKURTICKET PREMIUM</div>
+                                <div class="ticket-admit">GOLDEN PASS 👑</div>
+                            </div>
+
+                            <h1 id="ticket-movie" class="ticket-title">PUSHPA 2</h1>
+
+                            <div class="ticket-user-info">
+                                <small>ISSUED TO</small>
+                                <div id="ticket-user-name">GUEST</div>
+                                <div id="ticket-user-email">guest@example.com</div>
+                            </div>
+
+                            <div class="ticket-data-grid">
+                                <div class="data-item">
+                                    <small>DATE</small>
+                                    <div id="ticket-date-text">APR 12, 2026</div>
+                                </div>
+                                <div class="data-item">
+                                    <small>TIME</small>
+                                    <div id="ticket-time-text">07:30 PM</div>
+                                </div>
+                                <div class="data-item">
+                                    <small>SEATS</small>
+                                    <div id="ticket-seats-text">A1, A2</div>
+                                </div>
+                                <div class="data-item">
+                                    <small>HALL</small>
+                                    <div>SCREEN 04</div>
+                                </div>
+                            </div>
+                            <div class="ticket-footer">
+                                <div class="barcode"></div>
+                                <div class="ticket-serial">SERIAL: BK-8849-UX21</div>
+                            </div>
+                        </div>
+
+                        <div class="ticket-stub-section">
+                            <div class="stub-notch top-notch"></div>
+                            <div class="stub-notch bottom-notch"></div>
+                            <div class="stub-content">
+                                <small>TOTAL PAID</small>
+                                <div id="ticket-total-text" style="font-size: 1.8rem; font-weight: 900;">₹350.00
+                                </div>
+                                <div class="barcode barcode-stub"></div>
+                                <div style="font-size:0.6rem; opacity:0.8; margin-top:0.5rem;">OFFICIAL PASS ✅</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display:flex; flex-direction:column; gap:1rem; margin-top:2.5rem;">
+                    <button class="btn btn-success" onclick="downloadTicketPDF()"
+                        style="font-size:1.1rem; padding:1.2rem;">📥 Download Authentic Ticket</button>
+                    <button class="btn btn-outline" onclick="shareTicket()"
+                        style="font-size:1.1rem; padding:1.2rem; border-color: #25D366; color: #25D366;">💬 Share to
+                        WhatsApp</button>
+                    <button class="btn btn-minimal" onclick="location.reload()">Back to Home</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trailer Modal -->
+    <div id="trailer-modal" class="modal-overlay hidden"
+        style="z-index: 5000; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px);">
+        <div style="position: relative; width: 90%; max-width: 1000px; aspect-ratio: 16/9; margin: 5rem auto 0;">
+            <button class="close-btn" onclick="closeTrailer()"
+                style="position: absolute; top: -40px; right: 0; color: white; background: none; border: none; font-size: 2rem; cursor: pointer;">&times;</button>
+            <iframe id="trailer-iframe" width="100%" height="100%" src="" frameborder="0"
+                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
+                style="border-radius: 12px; box-shadow: 0 10px 40px rgba(255,51,102,0.3);"></iframe>
+        </div>
+    </div>
+
+    <script src="/static/js/main.js?v=24.0"></script>
+</body>
+
+</html>

@@ -1,0 +1,29 @@
+<header class="navbar">
+    <div class="nav-left">
+        <div class="logo">Book<span style="color:var(--accent-color)">Ur</span>Ticket</div>
+    </div>
+
+    <div class="nav-center">
+        <div class="search-capsule">
+            <input type="text" id="global-search" placeholder="Search 35+ movies, genres, or languages..."
+                autocomplete="off">
+            <button class="btn-search-icon">🔍</button>
+        </div>
+        <div id="search-results" class="search-results-overlay hidden"></div>
+    </div>
+
+    <div class="nav-right">
+        <a href="#" class="nav-link active" data-target="movies-view">Home</a>
+        <a href="#" class="nav-link" data-target="cinemas-view">Cinemas</a>
+        <button id="theme-btn" class="btn btn-minimal" style="font-size: 1.2rem; padding: 0.5rem;">🌙</button>
+        <button id="login-nav-btn" class="btn btn-outline">Login</button>
+        <button id="register-nav-btn" class="btn btn-primary">Register</button>
+        <div id="logged-in-state" class="hidden" style="display: flex; align-items: center; gap: 1rem;">
+            <button id="admin-nav-btn" class="btn btn-primary hidden">👑 Admin Hub</button>
+            <a href="#" class="nav-link" data-target="profile-view" id="user-display-name"
+                style="font-weight: 800; color: var(--accent-color); background: #fdf2f5; padding: 0.5rem 1rem; border-radius: 20px;">Hi,
+                User</a>
+            <button id="logout-btn" class="btn btn-minimal">Logout</button>
+        </div>
+    </div>
+</header>
